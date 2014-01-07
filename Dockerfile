@@ -1,9 +1,6 @@
-FROM ubuntu:12.04
+FROM turbovote/base:latest
 MAINTAINER TurboVote <dev@turbovote.org>
 
-RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
-
-RUN apt-get update -q
 RUN apt-get install -q -y rsyslog
 RUN apt-get install -q -y rsyslog-gnutls
 
