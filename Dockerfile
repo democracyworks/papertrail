@@ -1,5 +1,5 @@
-FROM turbovote/base:latest
-MAINTAINER TurboVote <dev@turbovote.org>
+FROM democracyworks/base:latest
+MAINTAINER Democracy Works, Inc. <dev@turbovote.org>
 
 RUN apt-get install -q -y rsyslog
 RUN apt-get install -q -y rsyslog-gnutls
