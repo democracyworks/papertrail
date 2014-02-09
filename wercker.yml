@@ -1,0 +1,52 @@
+box: wercker-labs/docker
+build:
+  steps:
+    - script:
+        name: build the container
+        code: |
+          sudo -E docker build -t democracyworks/papertrail .
+    - script:
+        name: save the image
+        code: |
+          sudo -E docker save democracyworks/papertrail > $WERCKER_OUTPUT_DIR/papertrail-image.tar
+deploy:
+  steps:
+    - add-to-known_hosts:
+        hostname: vpc-gw.turbovote.org
+    - mktemp:
+        envvar: PRIVATEKEY_PATH
+    - create-file:
+        name: write key
+        filename: $PRIVATEKEY_PATH
+        content: $DEPLOY_PRIVATE_KEY
+        overwrite: true
+        hide-from-log: true
+    - script:
+        name: load the container
+        code: |
+          sudo -E docker load < papertrail-image.tar
+    - script:
+        name: tag the container for the private registry
+        code: |
+          sudo -E docker tag democracyworks/papertrail quay.io/democracyworks/papertrail
+    - script:
+        name: login to quay.io
+        hide-from-log: true
+        code: |
+          echo $QUAY_DOCKERCFG > $HOME/.dockercfg
+    - script:
+        name: push the container to the private registry
+        code: |
+          sudo -E docker push quay.io/democracyworks/papertrail
+    - script:
+        name: setup ssh tunnels to docker hosts
+        code: |
+          ssh -i $PRIVATEKEY_PATH ec2-user@vpc-gw.turbovote.org -L2222:10.0.2.254:22 -f -N
+          ssh -i $PRIVATEKEY_PATH ec2-user@vpc-gw.turbovote.org -L2223:10.0.1.13:22 -f -N
+    - script:
+        name: run container
+        code: |
+          scp -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -P 2222 $HOME/.dockercfg deploy@localhost:.dockercfg
+          scp -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -P 2223 $HOME/.dockercfg deploy@localhost:.dockercfg
+          ssh -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -p 2222 deploy@localhost 'docker pull quay.io/democracyworks/papertrail && docker run -d -p 514:514/udp quay.io/democracyworks/papertrail'
+          ssh -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -p 2223 deploy@localhost 'docker pull quay.io/democracyworks/papertrail && docker run -d -p 514:514/udp quay.io/democracyworks/papertrail'
