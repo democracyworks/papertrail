@@ -48,5 +48,5 @@ deploy:
         code: |
           scp -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -P 2222 $HOME/.dockercfg deploy@localhost:.dockercfg
           scp -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -P 2223 $HOME/.dockercfg deploy@localhost:.dockercfg
-          ssh -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -p 2222 deploy@localhost 'docker pull quay.io/democracyworks/papertrail && docker run -d -p 514:514/udp -e PAPERTRAIL_PORT=$PAPERTRAIL_PORT quay.io/democracyworks/papertrail'
-          ssh -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -p 2223 deploy@localhost 'docker pull quay.io/democracyworks/papertrail && docker run -d -p 514:514/udp -e PAPERTRAIL_PORT=$PAPERTRAIL_PORT quay.io/democracyworks/papertrail'
+          ssh -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -p 2222 deploy@localhost "docker pull quay.io/democracyworks/papertrail && docker run -d -p 514:514/udp -e PAPERTRAIL_PORT=$PAPERTRAIL_PORT quay.io/democracyworks/papertrail"
+          ssh -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -p 2223 deploy@localhost "docker pull quay.io/democracyworks/papertrail && docker run -d -p 514:514/udp -e PAPERTRAIL_PORT=$PAPERTRAIL_PORT quay.io/democracyworks/papertrail"
