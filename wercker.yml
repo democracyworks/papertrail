@@ -33,7 +33,7 @@ deploy:
         name: login to quay.io
         hide-from-log: true
         code: |
-          echo $QUAY_DOCKERCFG > $HOME/.dockercfg
+          echo $QUAY_DOCKERCFG | tee $HOME/.dockercfg
     - script:
         name: push the container to the private registry
         code: |
