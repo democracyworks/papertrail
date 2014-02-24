@@ -4,11 +4,11 @@ build:
     - script:
         name: build the container
         code: |
-          sudo -E docker build -t democracyworks/papertrail .
+          docker build -t democracyworks/papertrail .
     - script:
         name: save the image
         code: |
-          sudo -E docker save democracyworks/papertrail > $WERCKER_OUTPUT_DIR/papertrail-image.tar
+          docker save democracyworks/papertrail > $WERCKER_OUTPUT_DIR/papertrail-image.tar
 deploy:
   steps:
     - add-to-known_hosts:
@@ -24,11 +24,11 @@ deploy:
     - script:
         name: load the container
         code: |
-          sudo -E docker load < papertrail-image.tar
+          docker load < papertrail-image.tar
     - script:
         name: tag the container for the private registry
         code: |
-          sudo -E docker tag democracyworks/papertrail quay.io/democracyworks/papertrail
+          docker tag democracyworks/papertrail quay.io/democracyworks/papertrail
     - script:
         name: login to quay.io
         hide-from-log: true
@@ -37,7 +37,7 @@ deploy:
     - script:
         name: push the container to the private registry
         code: |
-          sudo -E docker push quay.io/democracyworks/papertrail
+          docker push quay.io/democracyworks/papertrail
     - script:
         name: setup ssh tunnels to docker hosts
         code: |
