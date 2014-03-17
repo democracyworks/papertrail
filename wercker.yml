@@ -12,7 +12,7 @@ build:
 deploy:
   steps:
     - add-to-known_hosts:
-        hostname: vpc-gw.turbovote.org
+        hostname: vpc-nat36.turbovote.org
     - mktemp:
         envvar: PRIVATEKEY_PATH
     - create-file:
@@ -41,8 +41,8 @@ deploy:
     - script:
         name: setup ssh tunnels to docker hosts
         code: |
-          ssh -i $PRIVATEKEY_PATH ec2-user@vpc-gw.turbovote.org -L2222:docker1-vpc36-int.turbovote.org:22 -f -N
-          ssh -i $PRIVATEKEY_PATH ec2-user@vpc-gw.turbovote.org -L2223:docker2-vpc36-int.turbovote.org:22 -f -N
+          ssh -i $PRIVATEKEY_PATH ec2-user@vpc-nat36.turbovote.org -L2222:docker1-vpc36-int.turbovote.org:22 -f -N
+          ssh -i $PRIVATEKEY_PATH ec2-user@vpc-nat36.turbovote.org -L2223:docker2-vpc36-int.turbovote.org:22 -f -N
     - script:
         name: run container
         code: |
