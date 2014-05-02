@@ -41,8 +41,8 @@ deploy:
     - script:
         name: setup ssh tunnels to docker hosts
         code: |
-          ssh -i $PRIVATEKEY_PATH ec2-user@vpc-gw.turbovote.org -L2222:10.0.2.254:22 -f -N
-          ssh -i $PRIVATEKEY_PATH ec2-user@vpc-gw.turbovote.org -L2223:10.0.1.13:22 -f -N
+          ssh -i $PRIVATEKEY_PATH ec2-user@vpc-gw.turbovote.org -L2222:docker1-int.turbovote.org:22 -f -N
+          ssh -i $PRIVATEKEY_PATH ec2-user@vpc-gw.turbovote.org -L2223:docker2-int.turbovote.org:22 -f -N
     - script:
         name: run container
         code: |
