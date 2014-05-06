@@ -4,11 +4,20 @@ build:
     - script:
         name: build the container
         code: |
-          docker build -t democracyworks/papertrail .
+          docker build -t quay.io/democracyworks/papertrail:$WERCKER_GIT_BRANCH .
     - script:
         name: save the image
         code: |
           docker save democracyworks/papertrail > $WERCKER_OUTPUT_DIR/papertrail-image.tar
+    - script:
+        name: login to quay.io
+        hide-from-log: true
+        code: |
+          echo $QUAY_DOCKERCFG > $HOME/.dockercfg
+    - script:
+        name: push the container to the private registry
+        code: |
+          docker push quay.io/democracyworks/papertrail
 deploy:
   steps:
     - add-to-known_hosts:
@@ -22,23 +31,6 @@ deploy:
         overwrite: true
         hide-from-log: true
     - script:
-        name: load the container
-        code: |
-          docker load < papertrail-image.tar
-    - script:
-        name: tag the container for the private registry
-        code: |
-          docker tag democracyworks/papertrail quay.io/democracyworks/papertrail
-    - script:
-        name: login to quay.io
-        hide-from-log: true
-        code: |
-          echo $QUAY_DOCKERCFG | tee $HOME/.dockercfg
-    - script:
-        name: push the container to the private registry
-        code: |
-          docker push quay.io/democracyworks/papertrail
-    - script:
         name: setup ssh tunnels to docker hosts
         code: |
           ssh -i $PRIVATEKEY_PATH ec2-user@vpc-gw.turbovote.org -L2222:docker1-int.turbovote.org:22 -f -N
@@ -48,5 +40,5 @@ deploy:
         code: |
           scp -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -P 2222 $HOME/.dockercfg deploy@localhost:.dockercfg
           scp -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -P 2223 $HOME/.dockercfg deploy@localhost:.dockercfg
-          ssh -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -p 2222 deploy@localhost "docker pull quay.io/democracyworks/papertrail && docker run -d -P -p 514:514/udp -e PAPERTRAIL_PORT=$PAPERTRAIL_PORT -name papertrail quay.io/democracyworks/papertrail"
-          ssh -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -p 2223 deploy@localhost "docker pull quay.io/democracyworks/papertrail && docker run -d -P -p 514:514/udp -e PAPERTRAIL_PORT=$PAPERTRAIL_PORT -name papertrail quay.io/democracyworks/papertrail"
+          ssh -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -p 2222 deploy@localhost "docker pull quay.io/democracyworks/papertrail && docker run -d -P -p 514:514/udp -e PAPERTRAIL_PORT=$PAPERTRAIL_PORT -name papertrail quay.io/democracyworks/papertrail:$WERCKER_GIT_BRANCH"
+          ssh -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -p 2223 deploy@localhost "docker pull quay.io/democracyworks/papertrail && docker run -d -P -p 514:514/udp -e PAPERTRAIL_PORT=$PAPERTRAIL_PORT -name papertrail quay.io/democracyworks/papertrail:$WERCKER_GIT_BRANCH"
