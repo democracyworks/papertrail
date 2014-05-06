@@ -6,10 +6,6 @@ build:
         code: |
           docker build -t quay.io/democracyworks/papertrail:$WERCKER_GIT_BRANCH .
     - script:
-        name: save the image
-        code: |
-          docker save democracyworks/papertrail > $WERCKER_OUTPUT_DIR/papertrail-image.tar
-    - script:
         name: login to quay.io
         hide-from-log: true
         code: |
