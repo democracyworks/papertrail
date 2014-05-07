@@ -1,4 +1,4 @@
-FROM ubuntu:13.10
+FROM ubuntu:14.04
 MAINTAINER Democracy Works, Inc. <dev@turbovote.org>
 
 RUN apt-get update
