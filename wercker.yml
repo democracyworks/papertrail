@@ -32,7 +32,7 @@ deploy:
           ssh -i $PRIVATEKEY_PATH ec2-user@vpc-gw.turbovote.org -L2222:docker1-int.turbovote.org:22 -f -N
           ssh -i $PRIVATEKEY_PATH ec2-user@vpc-gw.turbovote.org -L2223:docker2-int.turbovote.org:22 -f -N
     - script:
-        name: run container
+        name: run containers
         code: |
           scp -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -P 2222 $HOME/.dockercfg deploy@localhost:.dockercfg
           scp -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -P 2223 $HOME/.dockercfg deploy@localhost:.dockercfg
