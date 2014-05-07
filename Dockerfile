@@ -1,7 +1,6 @@
-FROM ubuntu:14.04
+FROM democracyworks/base:latest
 MAINTAINER Democracy Works, Inc. <dev@turbovote.org>
 
-RUN apt-get update
 RUN apt-get install -q -y rsyslog
 RUN apt-get install -q -y rsyslog-gnutls
 
