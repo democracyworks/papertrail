@@ -27,7 +27,7 @@ if [ $PAPERTRAIL_PORT ]; then
 
   echo "$EXTRA_CONFIG" >> /etc/rsyslog.conf
 
-  rsyslogd -c5 -n
+  rsyslogd -n
 else
   echo "You must configure PAPERTRAIL_PORT"
   exit 1
