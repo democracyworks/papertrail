@@ -32,6 +32,11 @@ deploy:
           ssh -i $PRIVATEKEY_PATH ec2-user@vpc-gw.turbovote.org -L2222:docker1-int.turbovote.org:22 -f -N
           ssh -i $PRIVATEKEY_PATH ec2-user@vpc-gw.turbovote.org -L2223:docker2-int.turbovote.org:22 -f -N
     - script:
+        name: rm old papertrail containers
+        code: |
+          ssh -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -p 2222 deploy@localhost "(docker inspect papertrail > /dev/null 2>&1 && docker rm -f papertrail) || true"
+          ssh -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -p 2223 deploy@localhost "(docker inspect papertrail > /dev/null 2>&1 && docker rm -f papertrail) || true"
+    - script:
         name: run containers
         code: |
           ssh -i $PRIVATEKEY_PATH -o "StrictHostKeyChecking no" -p 2222 deploy@localhost "docker pull quay.io/democracyworks/papertrail && docker run -d -P -p 514:514/udp -e PAPERTRAIL_PORT=$PAPERTRAIL_PORT --name papertrail quay.io/democracyworks/papertrail:$WERCKER_GIT_BRANCH"
