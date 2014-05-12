@@ -1,4 +1,4 @@
-FROM democracyworks/base
+FROM quay.io/democracyworks/base
 MAINTAINER Democracy Works, Inc. <dev@turbovote.org>
 
 RUN apt-get install -q -y rsyslog
