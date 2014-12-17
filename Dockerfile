@@ -10,4 +10,4 @@ RUN echo "*.=notice;*.=warn |/dev/console" > /etc/rsyslog.d/50-default.conf
 
 EXPOSE 514/udp
 
-CMD ["/run.sh"]
+CMD ["/configure-and-run-rsyslog.sh"]
