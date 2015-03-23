@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -ex
+
+if [[ -z $DOCKER_REPO && -n $1 ]]; then
+  DOCKER_REPO=$1
+fi
+
+echo '--- building docker image'
+export IMAGE_TAG=${BUILDBOX_BRANCH}-$(git rev-parse --short ${BUILDBOX_COMMIT})
+docker build -t $DOCKER_REPO:$IMAGE_TAG .
+
+if [[ $CI = "true" && $BUILDBOX_PULL_REQUEST = "false" ]]; then
+  echo '--- pushing docker image to registry'
+  if [[ -n $DOCKER_CREDS && ! -e $HOME/.dockercfg ]]; then
+    echo $DOCKER_CREDS > $HOME/.dockercfg
+  fi
+  docker push $DOCKER_REPO
+fi
+
+if hash buildbox-agent 2>/dev/null ; then
+  buildbox-agent build-data set docker-image "$DOCKER_REPO:$IMAGE_TAG"
+else
+  echo "$DOCKER_REPO:$IMAGE_TAG" > docker_image
+fi
