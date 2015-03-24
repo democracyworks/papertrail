@@ -14,6 +14,7 @@ docker pull $DOCKER_REPO
 if [[ -n "$old_container_ids" ]]; then
   for cid in "$old_container_ids"; do
     docker stop $cid
+    docker rm $cid
   done
 fi
 
