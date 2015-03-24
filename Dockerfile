@@ -1,8 +1,7 @@
-FROM quay.io/democracyworks/base:latest
+FROM quay.io/democracyworks/base:2015032400
 MAINTAINER Democracy Works, Inc. <dev@turbovote.org>
 
-RUN apt-get install -q -y rsyslog
-RUN apt-get install -q -y rsyslog-gnutls
+RUN apt-get update && apt-get install -q -y rsyslog rsyslog-gnutls
 
 ADD syslog.papertrail.crt /etc/syslog.papertrail.crt
 ADD configure-and-run-rsyslog.sh /configure-and-run-rsyslog.sh
