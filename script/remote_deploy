@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# This script is copied to the deploy target by the deploy script and run there.
+# You probably don't want to run it directly.
+
+set -ex
+
+DOCKER_REPO=$(echo "$DOCKER_IMAGE" | cut -d: -f1)
+
+old_container_ids=$(docker ps | grep $DOCKER_REPO | awk '{print $1}')
+
+docker pull $DOCKER_REPO
+
+if [[ -n "$old_container_ids" ]]; then
+  for cid in "$old_container_ids"; do
+    docker stop $cid
+    docker rm $cid
+  done
+fi
+
+docker run -d -P -p 514:514/udp -e PAPERTRAIL_PORT=$PAPERTRAIL_PORT --name papertrail $DOCKER_IMAGE
