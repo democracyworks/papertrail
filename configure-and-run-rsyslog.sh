@@ -5,10 +5,11 @@ if [ $PAPERTRAIL_PORT ]; then
 \$ModLoad imudp
 \$UDPServerRun 514
 
-\$DefaultNetstreamDriverCAFile /etc/syslog.papertrail.crt # trust these CAs
+\$DefaultNetstreamDriverCAFile /etc/papertrail-bundle.pem # trust these CAs
 \$ActionSendStreamDriver gtls # use gtls netstream driver
 \$ActionSendStreamDriverMode 1 # require TLS
 \$ActionSendStreamDriverAuthMode x509/name # authenticate by hostname
+\$ActionSendStreamDriverPermittedPeer *.papertrailapp.com
 
 \$ActionResumeInterval 10
 \$ActionQueueSize 100000
