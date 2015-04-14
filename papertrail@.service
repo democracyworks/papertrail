@@ -27,5 +27,4 @@ ExecStart=/bin/bash -c 'docker run --name ${CONTAINER} --restart=always \
 ExecStop=/usr/bin/docker stop ${CONTAINER}
 
 [X-Fleet]
-# this ensures we run one and only one of these per cluster node
-Conflicts=papertrail@*.service
+MachineOf=consul@%i.service
