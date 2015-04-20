@@ -8,7 +8,7 @@ Wants=consul@%i.service
 
 [Service]
 EnvironmentFile=/etc/environment
-TimeoutStartSec=10m # startup can take awhile when pulling docker images
+TimeoutStartSec=10m
 TimeoutStopSec=10m
 
 Environment=DOCKER_REPO=quay.io/democracyworks/papertrail
